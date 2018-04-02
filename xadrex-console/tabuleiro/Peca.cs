@@ -2,6 +2,7 @@
     class Peca {
 
         public Posicao posicao { get; set; }
+        //atributos que só serão acessados pela própria classe e suas subclasses
         public Cor cor { get; protected set; }
         public int qteMovimentos { get; protected set; }
         public Tabuleiro tab { get; protected set; }
@@ -13,6 +14,6 @@
             this.qteMovimentos = 0;
         }
 
-
+       
     }
 }
