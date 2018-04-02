@@ -23,6 +23,9 @@
         
         //método para colocar as peças no tabuleiro
         public void colocarPeca(Peca p, Posicao pos) {
+            if (existePeca(pos)) {
+                throw new TabuleiroException("Já existe uma peça nessa posição");
+            }
 
             //coloca a peça 'p' na matriz 'pecas' na posição '[pos.linha, pos.coluna]'
             pecas[pos.linha, pos.coluna] = p;
