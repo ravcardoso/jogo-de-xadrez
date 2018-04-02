@@ -16,5 +16,13 @@
             return pecas[linha, coluna];
         }
 
+        //método para colocar as peças no tabuleiro
+        public void colocarPeca(Peca p, Posicao pos) {
+
+            //coloca a peça 'p' na matriz 'pecas' na posição '[pos.linha, pos.coluna]'
+            pecas[pos.linha, pos.coluna] = p;
+            p.posicao = pos;
+
+        }
     }
 }

@@ -7,13 +7,14 @@
         public int qteMovimentos { get; protected set; }
         public Tabuleiro tab { get; protected set; }
 
-        public Peca(Posicao posicao, Tabuleiro tabuleiro, Cor cor) {
-            this.posicao = posicao;
+        //Ao criar uma peça, ela ainda não possui posição, por isso NULL. Quem determina sua posição é o tabuleiro
+        public Peca(Tabuleiro tabuleiro, Cor cor) {
+            this.posicao = null;
             this.tab = tabuleiro;
             this.cor = cor;
             this.qteMovimentos = 0;
         }
 
-       
+
     }
 }
