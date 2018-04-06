@@ -19,6 +19,26 @@
             qteMovimentos++;
         }
 
+        //verifica na matriz de movimentos possíveis, se existe pelo menos 1 valor verdadeiro
+        public bool existeMovimentosPossiveis() {
+            bool[,] mat = movimentosPossiveis();
+
+            for (int i = 0; i < tab.linhas; i++) {
+                for (int j = 0; j < tab.colunas; j++) {
+                    if (mat[i, j] == true) {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        //valida se uma peça pode mover para uma dada posição
+        public bool podeMoverPara(Posicao pos) {
+            return movimentosPossiveis()[pos.linha, pos.coluna];
+        }
+
         //método abstrato para implementação obrigatória nas classes filhas
         public abstract bool[,] movimentosPossiveis();
     }

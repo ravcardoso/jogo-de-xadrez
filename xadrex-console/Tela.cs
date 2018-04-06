@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using xadrez;
 using tabuleiro;
 
@@ -78,7 +76,6 @@ namespace xadrex_console {
         /* método que recebe a posição da peça que o usuário deseja movimentar
          * exemplo: c2
          */
-
         public static PosicaoXadrez lerPosicaoXadrez() {
             string s = Console.ReadLine();
             char coluna = s[0];
