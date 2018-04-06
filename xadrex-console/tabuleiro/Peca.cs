@@ -1,5 +1,5 @@
 ﻿namespace tabuleiro {
-    class Peca {
+    abstract class Peca {
 
         public Posicao posicao { get; set; }
         //atributos que só serão acessados pela própria classe e suas subclasses
@@ -19,5 +19,7 @@
             qteMovimentos++;
         }
 
+        //método abstrato para implementação obrigatória nas classes filhas
+        public abstract bool[,] movimentosPossiveis();
     }
 }

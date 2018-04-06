@@ -13,5 +13,11 @@
             return linha + ", " +
                    coluna;
         }
+
+        //define os valores da posição da peça
+        public void definirValores(int linha, int coluna) {
+            this.linha = linha;
+            this.coluna = coluna;
+        }
     }
 }

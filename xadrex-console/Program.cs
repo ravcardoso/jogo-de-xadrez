@@ -20,6 +20,14 @@ namespace xadrex_console {
                     //leio a posição do xadrez (a8) e converto pra posição de matriz (0,0)
                     Posicao origem = Tela.lerPosicaoXadrez().toPosicao();
 
+                    /* ao informar a peça que queremos mover, a tela será limpa e
+                     * reexibida com as posições possíveis marcadas
+                     */
+                    bool[,] posicoesPossiveis = partida.tab.peca(origem).movimentosPossiveis();
+                    Console.Clear();
+                    Tela.imprimirTabuleiro(partida.tab, posicoesPossiveis);
+
+                    Console.WriteLine();
                     Console.Write("Destino: ");
                     Posicao destino = Tela.lerPosicaoXadrez().toPosicao();
 
