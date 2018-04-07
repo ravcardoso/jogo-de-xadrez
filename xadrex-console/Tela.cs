@@ -14,11 +14,18 @@ namespace xadrex_console {
             Console.WriteLine();
             Console.WriteLine("________________________");
             Console.WriteLine("Turno: " + partida.turno);
-            Console.WriteLine("Aguardando jogada: " + partida.jogadorAtual);
 
-            if (partida.xeque) {
+            if (!partida.terminada) {
+                Console.WriteLine("Aguardando jogada: " + partida.jogadorAtual);
+
+                if (partida.xeque) {
+                    Console.WriteLine();
+                    Console.WriteLine("CUIDADO! Seu rei está em xeque");
+                }
+            } else {
+                Console.WriteLine("XEQUEMATE!");
                 Console.WriteLine();
-                Console.WriteLine("CUIDADO! Seu rei está em xeque");
+                Console.WriteLine("Vencedor: " + partida.jogadorAtual);
             }
         }
 
