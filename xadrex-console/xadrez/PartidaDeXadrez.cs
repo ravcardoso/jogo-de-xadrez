@@ -8,6 +8,7 @@ namespace xadrez {
         public int turno { get; private set; }
         public Cor jogadorAtual { get; private set; }
         public bool terminada { get; private set; }
+        public bool xeque { get; private set; }
         //Controle das peças capturadas -> conjunto de peças da partida e das peças capturadas
         private HashSet<Peca> pecas;
         private HashSet<Peca> capturadas;
@@ -18,28 +19,58 @@ namespace xadrez {
             turno = 1;
             jogadorAtual = Cor.Branca;
             terminada = false;
+            xeque = false;
             //instaciação dos conjuntos deve ocorrer antes da colocação das peças
             pecas = new HashSet<Peca>();
             capturadas = new HashSet<Peca>();
             colocarPecas();
         }
 
-        public void executarMovimento(Posicao origem, Posicao destino) {
+        public Peca executarMovimento(Posicao origem, Posicao destino) {
             Peca p = tab.retirarPeca(origem);
             p.incrimentarQtdeMovimentos();
+
             Peca pecaCapturada = tab.retirarPeca(destino);
             tab.colocarPeca(p, destino);
-            if(pecaCapturada != null) {
+
+            if (pecaCapturada != null) {
                 capturadas.Add(pecaCapturada);
             }
+            return pecaCapturada;
         }
         
         //conta o turno da partida
+        /* REGRA:
+         * o usuário não pode mover uma peça de modo que seu rei fique em xeque
+         */
         public void realizaJogada(Posicao origem, Posicao destino) {
-            executarMovimento(origem, destino);
-            turno++;
+            Peca pecaCapturada = executarMovimento(origem, destino);
 
+            if (estaEmXeque(jogadorAtual)) {
+                desfazMovimento(origem, destino, pecaCapturada);
+                throw new TabuleiroException("Você não pode se colocar em xeque!");
+            }
+
+            if (estaEmXeque(adversaria(jogadorAtual))) {
+                xeque = true;
+            } else {
+                xeque = false;
+            }
+
+            turno++;
             mudarJogador();
+        }
+
+        //método que desfaz o movimento realizado, caso ele tenha colocado o rei em xeque
+        public void desfazMovimento(Posicao origem, Posicao destino, Peca pecaCapturada) {
+            Peca p = tab.retirarPeca(destino);
+            p.decrementarQtdeMovimentos();
+
+            if (pecaCapturada != null) {
+                tab.colocarPeca(pecaCapturada, destino);
+                capturadas.Remove(pecaCapturada);
+            }
+            tab.colocarPeca(p, origem);
         }
 
         //muda a vez do jogador
@@ -74,6 +105,55 @@ namespace xadrez {
             aux.ExceptWith(pecasCapturadas(cor));
 
             return aux;
+        }
+
+        //método para devolver o rei de uma determinada cor
+        private Peca rei(Cor cor) {
+            foreach (Peca x in pecasEmJogo(cor)) {
+                //se a peça x é uma instância da classe Rei, retorna x
+                if(x is Rei) {
+                    return x;
+                }
+            }
+            return null;
+        }
+
+        /* método que testa todos os movimentos possíveis de todas as peças
+         * Quando o rei está em xeque?
+         * quando pelo menos uma peça adversária possui um movimento possível
+         * para a casa desse rei.
+         */
+        public bool estaEmXeque(Cor cor) {
+            Peca R = rei(cor);
+
+            //tratamento de erro só pra garantir. Se o jogo estiver correto, ela não deve acontecer
+            if(R == null) {
+                throw new TabuleiroException("Não tem rei da cor " + cor + "no tabuleiro!");
+            }
+
+            /* Para cada peça x no conjunto das peças em jogo da cor adversária
+             * preenche a matriz bool com seus movimentos possíveis
+             * se mat[] tiver um movimento para posição (linha, coluna) do rei, retorna true
+             * O rei está em xeque!
+             */
+            foreach(Peca x in pecasEmJogo(adversaria(cor))) {
+                bool[,] mat = x.movimentosPossiveis();
+
+                //if (mat[R.posicao.linha, R.posicao.coluna == true]) => dá no mesmo
+                if (mat[R.posicao.linha, R.posicao.coluna]) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        //método pra identificar a cor da peça adversária
+        private Cor adversaria(Cor cor) {
+            if(cor == Cor.Branca) {
+                return Cor.Preta;
+            } else {
+                return Cor.Branca;
+            }
         }
 
         public void validarPosiçãoDeOrigem(Posicao pos) {
