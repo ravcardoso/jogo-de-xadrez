@@ -93,6 +93,28 @@ namespace xadrez {
                 throw new TabuleiroException("Você não pode se colocar em xeque!");
             }
 
+            Peca p = tab.peca(destino);
+
+            //---------Jogada Especial---------
+            //------------Promoção--------------
+            /* REGRA:
+             * A jogada promoção é quando um peão atinge a linha final do tabuleiro adversário,
+             * quando isso ocorre, ele pode ser transformar em outra peça a escolha do jogador,
+             * mas geralmente a rainha é escolhida, por poder se locomover em qualquer direção
+             */
+            if (p is Peao) {
+                if((p.cor == Cor.Branca && destino.linha == 0) || (p.cor == Cor.Preta && destino.linha == 7)) {
+                    p = tab.retirarPeca(destino);
+                    pecas.Remove(p);
+
+                    //transformamos o peão automaticamente numa rainha, para simplificar a implementação
+                    Peca dama = new Dama(tab, p.cor);
+                    tab.colocarPeca(dama, destino);
+                    pecas.Add(dama);
+                }
+
+            }
+
             if (estaEmXeque(adversaria(jogadorAtual))) {
                 xeque = true;
             } else {
@@ -108,8 +130,6 @@ namespace xadrez {
 
             //---------Jogada Especial---------
             //-----------Em Passant------------
-            Peca p = tab.peca(destino);
-
             if (p is Peao && (destino.linha == origem.linha - 2 || destino.linha == origem.linha + 2)) {
                 vulneravelEmPassant = p;
             } else {
